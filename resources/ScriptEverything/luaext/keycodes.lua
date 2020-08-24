@@ -1,3 +1,5 @@
+--from https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+
 VK_NUMPAD0     =   tonumber("0x60")
 VK_NUMPAD1     =   tonumber("0x61")
 VK_NUMPAD2     =   tonumber("0x62")
