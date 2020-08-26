@@ -51,7 +51,7 @@ Bindings::~Bindings()
 void Bindings::Bind()
 {
 	lua_State* L = Lua::GetLua();
-	assert(L && "Failed to get Lua for bindings!");
+	assert(L && "Failed to do Lua for bindings!");
 	lua_register(L, "Print", LuaPrint);
 	lua_register(L, "PrintInt", LuaPrintInt);
 	lua_register(L, "average", average);
@@ -102,7 +102,7 @@ static int average(lua_State* L)
 static int LuaGetModule(lua_State* L)
 {
 	std::string module = lua_tostring(L, 1);
-	uintptr_t moduleH = (uintptr_t)GetModuleHandle(s2ws(module).c_str());
+	uintptr_t moduleH = (uintptr_t)GetModuleHandle(module.c_str());
 	//std::cout << moduleH << "\n";
 	lua_pushnumber(L, moduleH);
 	return 1;

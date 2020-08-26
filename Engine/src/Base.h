@@ -1,11 +1,18 @@
 #pragma once
 #define CONFIG_DIR "C:/ScriptEverything/"
 
+
+
 #include <Windows.h>
 #include <string>
 #include <iostream>
+#include <assert.h>
 
-static std::wstring s2ws(const std::string& s)
+#define BIT(x) x << 1
+
+
+
+static std::wstring string2wstring(const std::string& s)
 {
     int len;
     int slength = (int)s.length() + 1;

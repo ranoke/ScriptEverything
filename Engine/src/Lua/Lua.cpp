@@ -24,20 +24,37 @@ Lua::~Lua()
 	lua_close(L);
 }
 
+
+
 void Lua::Init() 
 {
-	std::cout << "Initializing Lua..\n";
-	L = luaL_newstate();
+    printf("Initializing Lua..\n");
+    L = luaL_newstate();                       
+    luaL_openlibs(L);                           
 
-	// Add standard libraries to Lua Virtual Machine
-	luaL_openlibs(L);
+    if (luaL_loadfile(L, CONFIG_DIR "main.lua"))
+    {
+
+        printf("Failed to load lua main.lua file\n");
+    }
 
 
-	std::cout << "Binding lua functionality..\n";
-	Bindings::Bind();
+    if (lua_pcall(L, 0, 0, 0))
+    {
+        printf("Failed to pcall()\n");
+    }
+        
 
-	std::cout << "Loading lua script..\n";
-	luaL_dofile(L, CONFIG_DIR"main.lua");
+    int args[] = { 0,0,0 };
+    CallFunc("main", args);
+
 
 	
+}
+
+void Lua::CallFunc(const char* func, int* args)
+{
+    lua_getglobal(L, func);
+    if (lua_pcall(L, args[0], args[1], args[2]))
+        printf("Failed to pcall function\n");
 }

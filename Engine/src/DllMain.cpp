@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Config.h"
 #include "Lua/Lua.h"
+#include "Hooks.h"
 
 
 Config config;
@@ -20,6 +21,7 @@ int main() {
 	}
 
 	Lua::Init();
+	Hooks::Init(RenderHook::OpenGL);
 
 	
 
