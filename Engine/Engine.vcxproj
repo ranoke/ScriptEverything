@@ -22,15 +22,22 @@
     <ClCompile Include="src\DllMain.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
     <ClCompile Include="src\Lua\Bindings.cpp" />
+    <ClCompile Include="src\Lua\Functional.cpp" />
+    <ClCompile Include="src\Lua\Helper.cpp" />
     <ClCompile Include="src\Lua\Lua.cpp" />
-    <ClCompile Include="src\Renderer.h" />
+    <ClCompile Include="src\Renderer\OpenGL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Hooks.h" />
     <ClInclude Include="src\Lua\Bindings.h" />
+    <ClInclude Include="src\Lua\Functional.h" />
+    <ClInclude Include="src\Lua\Helper.h" />
     <ClInclude Include="src\Lua\Lua.h" />
+    <ClInclude Include="src\Renderer\Geom.h" />
+    <ClInclude Include="src\Renderer\OpenGL.h" />
+    <ClInclude Include="src\Renderer\Renderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -88,28 +95,28 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformArchitecture)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(PlatformArchitecture)\</IntDir>
-    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(SolutionDir)vendor\config;$(ProjectDir)vendor\minhook\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(ProjectDir)vendor\minhook\include;$(ProjectDir)vendor\glm\include;$(ProjectDir)vendor\luabridge\Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\lua\libs;$(ProjectDir)vendor\minhook\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformArchitecture)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(PlatformArchitecture)\</IntDir>
-    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(SolutionDir)vendor\config;$(ProjectDir)vendor\minhook\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(ProjectDir)vendor\minhook\include;$(ProjectDir)vendor\glm\include;$(ProjectDir)vendor\luabridge\Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\lua\libs;$(ProjectDir)vendor\minhook\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformArchitecture)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(PlatformArchitecture)\</IntDir>
-    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(SolutionDir)vendor\config;$(ProjectDir)vendor\minhook\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(ProjectDir)vendor\minhook\include;$(ProjectDir)vendor\glm\include;$(ProjectDir)vendor\luabridge\Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\lua\libs;$(ProjectDir)vendor\minhook\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(PlatformArchitecture)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(PlatformArchitecture)\</IntDir>
-    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(SolutionDir)vendor\config;$(ProjectDir)vendor\minhook\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\json;$(ProjectDir)vendor\lua\include;$(ProjectDir)vendor\minhook\include;$(ProjectDir)vendor\glm\include;$(ProjectDir)vendor\luabridge\Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\lua\libs;$(ProjectDir)vendor\minhook\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -118,12 +125,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lua54-x32.lib;libMinHook-x86-v141-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua54-x32.lib;libMinHook-x86-v141-mtd.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -134,14 +141,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lua54-x32.lib;libMinHook-x86-v141-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua54-x32.lib;libMinHook-x86-v141-mtd.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,12 +157,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lua54-x64.lib;libMinHook-x64-v141-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua54-x64.lib;libMinHook-x64-v141-md.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,14 +173,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>lua54-x64.lib;libMinHook-x64-v141-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua54-x64.lib;libMinHook-x64-v141-md.lib;%(AdditionalDependencies);opengl32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

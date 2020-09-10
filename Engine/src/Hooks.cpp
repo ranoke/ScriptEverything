@@ -1,6 +1,6 @@
 #include "Hooks.h"
 #include <Minhook.h>
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
 
 #include <tchar.h>
 

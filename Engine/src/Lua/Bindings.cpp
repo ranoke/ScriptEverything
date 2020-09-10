@@ -1,37 +1,27 @@
 #include "Bindings.h"
 #include "Lua.h"
+#include "Functional.h"
 
 #include "../Base.h"
 
 #include <assert.h>
 #include <map>
 
-extern "C"
-{
-#include "lua.h"
-#include "lauxlib.h"
-#include "lualib.h"
-}
+#include <lua.hpp>
+#include <LuaBridge/LuaBridge.h>
 
-//enum DataType {
-//	NONE = 0,
-//	INT = 1,
-//	FLOAT = 2
-//};
-//
-//const std::map<const char*, DataType> string2typeEnum{
-//		{ "int", DataType::INT },
-//		{ "float", DataType::FLOAT }
-//};
-//
-//int string2type(const char* e)
-//{
-//	auto   it = string2typeEnum.find(e);
-//	return it->second;
-//}
+
+#include <glm/glm.hpp>
+#include "Helper.h"
+
+#include "../Renderer/OpenGL.h"
+
+
+
+
+
 
 typedef int (*lua_CFunction) (lua_State* L);
-static int average(lua_State* L);
 static int LuaPrint(lua_State* L);
 static int LuaPrintInt(lua_State* L);
 static int LuaGetModule(lua_State* L);
@@ -39,6 +29,8 @@ static int LuaReadMemory(lua_State* L);
 static int LuaReadMemoryInt(lua_State* L);
 static int LuaWriteMemoryInt(lua_State* L);
 static int LuaIsKeyPressed(lua_State* L);
+static int LuaPrintVec3(lua_State* L);
+static int LuaDrawRectC(lua_State* L);
 
 Bindings::Bindings()
 {
@@ -51,16 +43,33 @@ Bindings::~Bindings()
 void Bindings::Bind()
 {
 	lua_State* L = Lua::GetLua();
+
+	using namespace luabridge;
+
+	getGlobalNamespace(L)
+		.addFunction<bool, int>("IsKeyPressed", &Functional::IsKeyPressed)
+	.beginNamespace("Draw")
+		.addFunction<void, int,int,int>("DrawCrosshair", &OpenGL::DrawCrosshair)
+	.endNamespace()
+
+	.beginNamespace("Mem")
+		.addFunction<char, uintptr_t>("ReadByte", &Functional::Mem::ReadByte)
+		.addFunction<int, uintptr_t>("ReadInt", &Functional::Mem::ReadInt)
+		.addFunction<float, uintptr_t>("ReadFloat", &Functional::Mem::ReadFloat)
+		.addFunction<std::string, uintptr_t>("ReadString", &Functional::Mem::ReadString)
+	.endNamespace();
+
 	assert(L && "Failed to do Lua for bindings!");
 	lua_register(L, "Print", LuaPrint);
 	lua_register(L, "PrintInt", LuaPrintInt);
-	lua_register(L, "average", average);
 	lua_register(L, "GetModule", LuaGetModule);
-	lua_register(L, "ReadMemory", LuaReadMemory);
-	lua_register(L, "ReadMemoryInt", LuaReadMemoryInt);
 	lua_register(L, "WriteMemoryInt", LuaWriteMemoryInt);
-	lua_register(L, "IsKeyPressed", LuaIsKeyPressed);
+	lua_register(L, "PrintVec", LuaPrintVec3);
+	lua_register(L, "DrawRectC", LuaDrawRectC);
+
+
 }
+
 
 static int LuaPrint(lua_State* L)
 {
@@ -74,28 +83,39 @@ static int LuaPrintInt(lua_State* L)
 	return 0;
 }
 
-static int average(lua_State* L)
+//args: vec3
+static int LuaPrintVec3(lua_State* L)
 {
-	/* get number of arguments */
+	int i, n;
+	luaL_checktype(L,1, LUA_TTABLE);
+	
+	i = lua_rawlen(L, 1);  
+	
+
+	return 0;
+}
+
+// Draw rect by center
+//args: vec2 center, vec2 half_width_height, vec3 color, float lineWidth
+static int LuaDrawRectC(lua_State* L)
+{
+	glm::vec2 center, halfWH;
+	glm::vec3 color;
+	float lineWidth;
+
 	int n = lua_gettop(L);
-	double sum = 0;
-	int i;
+	assert(n == 4 && "LuaDrawRectC bad argument count!");
 
-	/* loop through each argument */
-	for (i = 1; i <= n; i++)
-	{
-		/* total the arguments */
-		sum += lua_tonumber(L, i);
-	}
 
-	/* push the average */
-	lua_pushnumber(L, sum / n);
+	GetTable<glm::vec2, float>(L, &center, 1, 2);
+	GetTable<glm::vec2, float>(L, &halfWH, 2, 2);
+	GetTable<glm::vec3, float>(L, &color, 3, 3);
+	lineWidth = (float)lua_tonumber(L, 4);
+	OpenGL::DrawRect(center, halfWH, color, lineWidth);
 
-	/* push the sum */
-	lua_pushnumber(L, sum);
 
-	/* return the number of results */
-	return 2;
+		
+	return 0;
 }
 
 //args: std::string moduleName

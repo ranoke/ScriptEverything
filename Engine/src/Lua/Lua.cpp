@@ -4,13 +4,9 @@
 
 #include <iostream>
 
-// include Lua, assumes it is local to this file
-extern "C"
-{
-#include "lua.h"
-#include "lauxlib.h"
-#include "lualib.h"
-}
+
+#include <lua.hpp>
+
 
 lua_State* Lua::L;
 
@@ -31,6 +27,8 @@ void Lua::Init()
     printf("Initializing Lua..\n");
     L = luaL_newstate();                       
     luaL_openlibs(L);                           
+
+    Bindings::Bind();
 
     if (luaL_loadfile(L, CONFIG_DIR "main.lua"))
     {
