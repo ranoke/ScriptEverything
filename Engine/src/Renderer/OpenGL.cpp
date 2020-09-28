@@ -62,7 +62,7 @@ namespace OpenGL
 		glColor3ub(color.x, color.y, color.z);
 		glm::vec2 vertices[4] = {
 			{center.x - halfWH.x, center.y + halfWH.y},
-        	{center.x + halfWH.x, center.y + halfWH.y},
+			{center.x + halfWH.x, center.y + halfWH.y},
 			{center.x + halfWH.x, center.y - halfWH.y},
 			{center.x - halfWH.x, center.y - halfWH.y}
 		};
@@ -74,9 +74,9 @@ namespace OpenGL
 		glPopMatrix();
 	}
 
-	glm::vec3 WorldToScreenUniversal( glm::mat4 viewmatrix, glm::vec4 viewport, glm::vec3 pos)
+	glm::vec3 WorldToScreenUniversal(glm::mat4 viewmatrix, glm::vec4 viewport, glm::vec3 pos)
 	{
-		glm::mat4 modelmatix = glm::translate(viewmatrix, glm::vec3(0.0f,0.0f, 0.0f));
+		glm::mat4 modelmatix = glm::translate(viewmatrix, glm::vec3(0.0f, 0.0f, 0.0f));
 
 		return glm::project(pos, modelmatix, viewmatrix, viewport);
 	}
@@ -104,6 +104,13 @@ namespace OpenGL
 		playerScreenCoords.x = (tmpViewPort[2] / 2 * ndc.x) + (ndc.x + tmpViewPort[2] / 2);
 		playerScreenCoords.y = -(tmpViewPort[3] / 2 * ndc.y) + (ndc.y + tmpViewPort[3] / 2);
 		return playerScreenCoords;
+	}
+
+	glm::vec4 GetViewport()
+	{
+		glm::vec4 viewport = { 0,0,0,0 };
+		glGetFloatv(GL_VIEWPORT, &viewport[0]);
+		return viewport;
 	}
 
 }

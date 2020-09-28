@@ -31,6 +31,8 @@ static int LuaWriteMemoryInt(lua_State* L);
 static int LuaIsKeyPressed(lua_State* L);
 static int LuaPrintVec3(lua_State* L);
 static int LuaDrawRectC(lua_State* L);
+static int LuaWorldToScreen(lua_State* L);
+
 
 Bindings::Bindings()
 {
@@ -48,7 +50,7 @@ void Bindings::Bind()
 
 	getGlobalNamespace(L)
 		.addFunction<bool, int>("IsKeyPressed", &Functional::IsKeyPressed)
-	.beginNamespace("Draw")
+	.beginNamespace("Renderer")
 		.addFunction<void, int,int,int>("DrawCrosshair", &OpenGL::DrawCrosshair)
 	.endNamespace()
 
@@ -57,6 +59,10 @@ void Bindings::Bind()
 		.addFunction<int, uintptr_t>("ReadInt", &Functional::Mem::ReadInt)
 		.addFunction<float, uintptr_t>("ReadFloat", &Functional::Mem::ReadFloat)
 		.addFunction<std::string, uintptr_t>("ReadString", &Functional::Mem::ReadString)
+		.addFunction<void, uintptr_t, char>("WriteByte", &Functional::Mem::WriteByte)
+		.addFunction<void, uintptr_t, int>("WriteInt", &Functional::Mem::WriteInt)
+		.addFunction<void, uintptr_t, float>("WriteFloat", &Functional::Mem::WriteFloat)
+		.addFunction<void, uintptr_t, std::string>("WriteString", &Functional::Mem::WriteString)
 	.endNamespace();
 
 	assert(L && "Failed to do Lua for bindings!");
@@ -66,6 +72,7 @@ void Bindings::Bind()
 	lua_register(L, "WriteMemoryInt", LuaWriteMemoryInt);
 	lua_register(L, "PrintVec", LuaPrintVec3);
 	lua_register(L, "DrawRectC", LuaDrawRectC);
+	lua_register(L, "WorldToScreen", LuaWorldToScreen);
 
 
 }
@@ -179,6 +186,21 @@ static int LuaIsKeyPressed(lua_State* L)
 	assert(n == 1 && "LuaIsKeyPressed bad argument count!");
 	lua_pushboolean(L, GetAsyncKeyState(lua_tonumber(L, 1)));
 	return 1;
+}
+
+static int LuaWorldToScreen(lua_State* L)
+{
+	int n = lua_gettop(L);
+	assert(n == 2 && "LuaWorldToScreen bad argument count!");
+	uintptr_t viewmatrix_ptr = lua_tonumber(L, 1);
+	glm::vec3 pos;
+	GetTable<glm::vec3, float>(L, &pos, 2, 3);
+	glm::vec3 ret = Functional::WorldToScreen(viewmatrix_ptr, pos);
+
+	lua_pushnumber(L, ret[0]);
+	lua_pushnumber(L, ret[1]);
+
+	return 2;
 }
 
 

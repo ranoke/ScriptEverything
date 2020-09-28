@@ -30,7 +30,7 @@ static void OnRender(HDC hDc)
 
 	//std::cout << "My: " << dot1.x << " " << dot1.y << " " << dot1.z << "\n";
 	//std::cout << "His: " << dot2.x << " " << dot2.y << "\n";
-	
+	//
 	
 	
 }
