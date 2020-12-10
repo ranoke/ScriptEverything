@@ -5,4 +5,4 @@ from resources move *ScriptEveryting* folder to C:/ or configure everyting on ur
 Now magic goes into main function in lua
 U can do it automaticaly by using Launcher :)
 
-![alt text](https://github.com/ranoke/ScriptEverything/blob/main/screenshot.png?raw=true)
+![alt text](https://github.com/ranoke/ScriptEverything/blob/main/screenshot.jpeg?raw=true)
